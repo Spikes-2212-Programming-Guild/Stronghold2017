@@ -2,6 +2,7 @@
 package org.usfirst.frc.team2212.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.command.Command;
@@ -43,7 +44,7 @@ public class Robot extends IterativeRobot {
 				new DoubleSpeedcontroller(new VictorSP(RobotMap.PWM.LEFT_FRONT_MOTOR),
 						new VictorSP(RobotMap.PWM.LEFT_REAR_MOTOR)),
 				new DoubleSpeedcontroller(new VictorSP(RobotMap.PWM.RIGHT_FRONT_MOTOR),
-						new VictorSP(RobotMap.PWM.RIGHT_REAR_MOTOR)));
+						new VictorSP(RobotMap.PWM.RIGHT_REAR_MOTOR)),new Encoder(RobotMap.DIO.ENCODER_A,RobotMap.DIO.ENCODER_B));
 		triz = new Triz(new VictorSP(RobotMap.PWM.TRIZ_MOTOR), new DigitalInput(RobotMap.DIO.TRIZ_UP),
 				new DigitalInput(RobotMap.DIO.TRIZ_DOWN));
 		oi = new OI();

@@ -1,17 +1,23 @@
 package org.usfirst.frc.team2212.robot.subsystems;
 
-import com.spikes2212.genericsubsystems.drivetrains.TankDrivetrain;
+import org.usfirst.frc.team2212.robot.Robot;
 
+import com.spikes2212.genericsubsystems.drivetrains.TankDrivetrain;
+import com.spikes2212.genericsubsystems.drivetrains.commands.DriveArcade;
+
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class Drivetrain extends TankDrivetrain {
 
 	private SpeedController left, right;
+	private Encoder encoder;
 
-	public Drivetrain(SpeedController left, SpeedController right) {
+	public Drivetrain(SpeedController left, SpeedController right, Encoder encoder) {
 		this.left = left;
 		this.right = right;
+		this.encoder=encoder;
 	}
 
 	@Override
@@ -29,19 +35,28 @@ public class Drivetrain extends TankDrivetrain {
 	@Override
 	public PIDSource getLeftPIDSource() {
 		// TODO Auto-generated method stub
-		return null;
+		return encoder;
 	}
 
 	@Override
 	public PIDSource getRightPIDSource() {
 		// TODO Auto-generated method stub
-		return null;
+		return encoder;
+	}
+	
+	public boolean resetEncoder(){
+		try{
+			encoder.reset();
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-
+		setDefaultCommand(new DriveArcade(this,Robot.oi::getY,Robot.oi::getX));
 	}
 
 }

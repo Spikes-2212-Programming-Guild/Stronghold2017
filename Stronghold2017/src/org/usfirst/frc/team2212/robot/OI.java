@@ -21,5 +21,8 @@ public class OI {
 	public OI() {
 		drive.whenPressed(new DriveArcade(Robot.drivetrain, () -> -j.getY(), j::getX));
 	}
+	
+	public double getX(){return j.getX();}
+	public double getY(){return -j.getY();}
 
 }
