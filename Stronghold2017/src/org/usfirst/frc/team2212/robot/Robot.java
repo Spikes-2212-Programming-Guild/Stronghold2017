@@ -32,9 +32,6 @@ public class Robot extends IterativeRobot {
 
 	public static OI oi;
 	public static Drivetrain drivetrain;
-	public static Folder folder;
-	public static Picker picker;
-	public static Shooter shooter;
 	public static Triz triz;
 
 	Command autonomousCommand;
@@ -53,10 +50,6 @@ public class Robot extends IterativeRobot {
 						new VictorSP(RobotMap.PWM.RIGHT_REAR_MOTOR)));
 		triz = new Triz(new VictorSP(RobotMap.PWM.TRIZ_MOTOR), new DigitalInput(RobotMap.DIO.TRIZ_UP),
 				new DigitalInput(RobotMap.DIO.TRIZ_DOWN));
-		folder = new Folder(new VictorSP(RobotMap.PWM.FOLDER_MOTOR), new DigitalInput(RobotMap.DIO.FOLDER_UP),
-				new DigitalInput(RobotMap.DIO.FOLDER_DOWN));
-		picker = new Picker(new VictorSP(RobotMap.PWM.PICKER_MOTOR));
-		shooter = new Shooter(new CANTalon(1));
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("triz move", new MoveLimitedSubsystem(triz, ConstantHandler.addConstantDouble("Triz Speed", 0.4)));
