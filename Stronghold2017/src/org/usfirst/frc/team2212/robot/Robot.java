@@ -11,12 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team2212.robot.subsystems.Drivetrain;
-import org.usfirst.frc.team2212.robot.subsystems.Folder;
-import org.usfirst.frc.team2212.robot.subsystems.Picker;
-import org.usfirst.frc.team2212.robot.subsystems.Shooter;
 import org.usfirst.frc.team2212.robot.subsystems.Triz;
 
-import com.ctre.CANTalon;
 import com.spikes2212.dashboard.ConstantHandler;
 import com.spikes2212.genericsubsystems.commands.MoveLimitedSubsystem;
 import com.spikes2212.utils.DoubleSpeedcontroller;
