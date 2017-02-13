@@ -29,10 +29,11 @@ public class FeedForwardStraight extends Command {
 
 	@Override
 	protected void execute() {
+		SmartDashboard.putNumber("actual", drivetrain.getRate());
 		double[] expected = feedforward.getExpected(((double) System.currentTimeMillis() / 1000.0) - startTime);
 		double value = feedforward.getVoltage(expected[1], expected[2], expected[0], drivetrain.getDistance());
 		SmartDashboard.putNumber("time", ((double) System.currentTimeMillis() / 1000.0) - startTime);
-		SmartDashboard.putNumber("Value", value);
+		SmartDashboard.putNumber("expected", value);
 		drivetrain.tankDrive(value, value);
 	}
 
