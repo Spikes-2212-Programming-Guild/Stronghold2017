@@ -18,6 +18,7 @@ public class Drivetrain extends TankDrivetrain {
 		this.left = left;
 		this.right = right;
 		this.encoder=encoder;
+		encoder.setDistancePerPulse( 0.203 * Math.PI /360);
 	}
 
 	@Override
@@ -30,6 +31,10 @@ public class Drivetrain extends TankDrivetrain {
 	public void setRight(double speedRight) {
 		right.set(-speedRight);
 
+	}
+	
+	public double getRate() {
+		return encoder.getRate();
 	}
 
 	@Override
@@ -52,6 +57,10 @@ public class Drivetrain extends TankDrivetrain {
 		catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public double getDistance() {
+		return encoder.getDistance();
 	}
 
 	@Override

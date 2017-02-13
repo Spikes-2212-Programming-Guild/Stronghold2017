@@ -11,10 +11,14 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.function.Supplier;
+
+import org.usfirst.frc.team2212.robot.commands.drivetrain.FeedForwardStraight;
 import org.usfirst.frc.team2212.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team2212.robot.subsystems.Triz;
 
 import com.spikes2212.dashboard.ConstantHandler;
+import com.spikes2212.dashboard.DashBoardController;
 import com.spikes2212.genericsubsystems.commands.MoveLimitedSubsystem;
 import com.spikes2212.utils.DoubleSpeedcontroller;
 
@@ -30,7 +34,8 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	public static Drivetrain drivetrain;
 	public static Triz triz;
-
+	public static Supplier<Double> acc,decc,vel;
+	public DashBoardController db;
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
 
@@ -47,6 +52,11 @@ public class Robot extends IterativeRobot {
 						new VictorSP(RobotMap.PWM.RIGHT_REAR_MOTOR)),new Encoder(RobotMap.DIO.ENCODER_A,RobotMap.DIO.ENCODER_B));
 		triz = new Triz(new VictorSP(RobotMap.PWM.TRIZ_MOTOR), new DigitalInput(RobotMap.DIO.TRIZ_UP),
 				new DigitalInput(RobotMap.DIO.TRIZ_DOWN));
+		acc=ConstantHandler.addConstantDouble("MAX_ACCELERATION",0.75);
+		decc=ConstantHandler.addConstantDouble("MAX_DECC", -0.75);
+		vel=ConstantHandler.addConstantDouble("VELOCITY", 3.5);
+		db=new DashBoardController();
+		db.addDouble("speed", ()->drivetrain.getRate());
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("triz move", new MoveLimitedSubsystem(triz, ConstantHandler.addConstantDouble("Triz Speed", 0.4)));
@@ -59,7 +69,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		SmartDashboard.putData("feedforward",new FeedForwardStraight(drivetrain, ConstantHandler.addConstantDouble("setpoint", 2).get()));
+		drivetrain.resetEncoder();
 	}
 
 	@Override
@@ -80,7 +91,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -90,8 +100,6 @@ public class Robot extends IterativeRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
 	}
 
 	/**

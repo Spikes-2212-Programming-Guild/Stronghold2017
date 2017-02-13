@@ -11,9 +11,7 @@ public class FeedForward {
 	 * the algorithm work by breaking the movement to 3 parts *
 	 */
 	double dt1, dt2, dt3;
-	private double t2;
-	private double t1;
-
+	
 	/**
 	 * 
 	 * @param p
@@ -38,8 +36,10 @@ public class FeedForward {
 		if (dt2 < 0) {
 			dt2 = 0;
 			double v = Math.sqrt((2 * setpoint * maxA * maxD) / (maxD - maxA));
+			SmartDashboard.putNumber("v", v);
 			dt3 = -v / maxD;
 			dt1 = v / maxA;
+			this.maxV=v;
 		}
 		SmartDashboard.putString("times", "" + dt1 + "," + dt2 + "," + dt3);
 	}
