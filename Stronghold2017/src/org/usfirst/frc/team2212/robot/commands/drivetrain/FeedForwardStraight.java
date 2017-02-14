@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2212.robot.commands.drivetrain;
 
+import org.usfirst.frc.team2212.robot.Constants;
 import org.usfirst.frc.team2212.robot.Robot;
 import org.usfirst.frc.team2212.robot.subsystems.Drivetrain;
 
@@ -11,7 +12,8 @@ public class FeedForwardStraight extends Command {
 	FeedForward feedforward;
 	public double setpoint;
 	Drivetrain drivetrain;
-	public double startTime;
+	public double startTime,lastTime;
+	public double dx;
 
 	public FeedForwardStraight(Drivetrain drivetrain, double setpoint) {
 		requires(drivetrain);
@@ -19,17 +21,19 @@ public class FeedForwardStraight extends Command {
 		SmartDashboard.putNumber("vel", Robot.vel.get());
 		this.setpoint = setpoint;
 		this.drivetrain = drivetrain;
-		setTimeout(feedforward.getTotalTime() + 1.5);
+		setTimeout(feedforward.getTotalTime());
 	}
 
 	@Override
 	protected void initialize() {
 		startTime = (double) System.currentTimeMillis() / 1000.0;
+		lastTime=startTime;
+		dx=0;
 	}
 
 	@Override
 	protected void execute() {
-		SmartDashboard.putNumber("actual", drivetrain.getRate());
+		SmartDashboard.putNumber("actual", -drivetrain.getRate()*Constants.DRIVETRAIN.VOLTAGE_VELOCITY_PARAMETER);
 		double[] expected = feedforward.getExpected(((double) System.currentTimeMillis() / 1000.0) - startTime);
 		double value = feedforward.getVoltage(expected[1], expected[2], expected[0], drivetrain.getDistance());
 		SmartDashboard.putNumber("time", ((double) System.currentTimeMillis() / 1000.0) - startTime);
@@ -44,6 +48,10 @@ public class FeedForwardStraight extends Command {
 							 * || Math.abs(setpoint-drivetrain.getDistance())<
 							 * Constants.epsilon
 							 */;
+	}
+	@Override
+	protected void end() {
+		SmartDashboard.putNumber("dx",feedforward.getExpected(((double) System.currentTimeMillis() / 1000.0))[0]);
 	}
 
 }

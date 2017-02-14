@@ -60,6 +60,7 @@ public class Robot extends IterativeRobot {
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("triz move", new MoveLimitedSubsystem(triz, ConstantHandler.addConstantDouble("Triz Speed", 0.4)));
+		SmartDashboard.putNumber("setpoint", 1);
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		SmartDashboard.putData("feedforward",new FeedForwardStraight(drivetrain, ConstantHandler.addConstantDouble("setpoint", 2).get()));
+		SmartDashboard.putData("feedforward",new FeedForwardStraight(drivetrain, SmartDashboard.getNumber("setpoint",0)));
 		drivetrain.resetEncoder();
 	}
 

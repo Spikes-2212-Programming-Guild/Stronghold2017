@@ -7,11 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class FeedForward {
 
 	private double maxV, maxA, maxD, setpoint;
+	private final double minV = 1;
 	/*
 	 * the algorithm work by breaking the movement to 3 parts *
 	 */
 	double dt1, dt2, dt3;
-	
+
 	/**
 	 * 
 	 * @param p
@@ -30,17 +31,17 @@ public class FeedForward {
 		this.maxD = maxD;
 		this.maxV = maxV;
 		this.setpoint = setpoint;
-		dt1 = (maxV / maxA);
-		dt2 = (setpoint / maxV - maxV / (2 * maxA) + maxV / (2 * maxD));
-		dt3 = -(maxV / maxD);
-		if (dt2 < 0) {
-			dt2 = 0;
-			double v = Math.sqrt((2 * setpoint * maxA * maxD) / (maxD - maxA));
-			SmartDashboard.putNumber("v", v);
-			dt3 = -v / maxD;
-			dt1 = v / maxA;
-			this.maxV=v;
-		}
+		dt1 = (maxV - minV) / maxA;
+		dt2 = (((maxD-maxA)*(Math.pow(maxV, 2)-Math.pow(minV, 2))-2*setpoint*maxA*maxD)/(-2*maxV*maxA*maxD));
+		dt3 = (minV - maxV) / maxD;
+		 if (dt2 < 0) {
+		 dt2 = 0;
+		 double v = Math.sqrt((2*maxA*maxD)/(maxD-maxA)+maxV*maxV);
+		 SmartDashboard.putNumber("v", v);
+		 dt3 = (v-minV)/(-maxD);
+		 dt1 = (v-minV)/maxA;
+		 this.maxV = v;
+		 }
 		SmartDashboard.putString("times", "" + dt1 + "," + dt2 + "," + dt3);
 	}
 
@@ -54,8 +55,10 @@ public class FeedForward {
 	 */
 	// TODO: check return type
 	public double getVoltage(double velocity, double acceleration, double expected, double location) {
-		return (Constants.DRIVETRAIN.VOLTAGE_VELOCITY_PARAMETER * (velocity)
-				+ Constants.DRIVETRAIN.VOLTAGE_ACCELERATION_PARAMETER * acceleration);
+		return (Constants.DRIVETRAIN.VOLTAGE_VELOCITY_PARAMETER * (velocity + minV)
+		/*
+		 * + Constants.DRIVETRAIN.VOLTAGE_ACCELERATION_PARAMETER * acceleration
+		 */);
 	}
 
 	public double getTotalTime() {
@@ -69,15 +72,15 @@ public class FeedForward {
 	 */
 	public double[] getExpected(double t) {
 		if (t <= dt1) {
-			return new double[] { maxA * t * t, maxA * t, maxA };
+			return new double[] {0.5*t*(2*minV+maxA*t), minV+maxA * t, maxA };
 		} else if (t <= (dt1 + dt2)) {
-			return new double[] { maxA * dt1 * dt1 + maxV * (t - dt1), maxV, 0 };
-		} else if (t <= getTotalTime()) {
+			return new double[] { 0.5*dt1*(minV+maxV)+maxV*(t-dt1), maxV, 0 };
+		} /* else if (t <= getTotalTime()) { */
 			// ask no questions, you will hear no lies
 			return new double[] {
-					maxA * dt1 * dt1 + maxV * dt2 + (maxV - dt1 - dt2) + 0.5 * maxD * Math.pow(t - dt1 - dt2, 2),
+					0.5*dt1*(minV+maxV)+maxV*(dt2-dt1)+(2*maxV + maxD * (t - dt1 - dt2))*(t-dt1-dt2)/2,
 					maxV + maxD * (t - dt1 - dt2), maxD };
-		}
-		return new double[] { setpoint, 0, 0 };
+//		}
+//		return new double[] { setpoint, 0, 0 };
 	}
 }
